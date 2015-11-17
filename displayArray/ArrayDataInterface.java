@@ -8,11 +8,14 @@ package displayArray;
  * 3. DisplayArray calling the various methods to get and send data
  * 
  * Contents of the integer array: 
- * 		numbers from 0 to 15 are allowed and will be coloured differently.
+ * 		numbers from 0 to 15 are allowed and are coloured differently. 
+ *    (There are 16 colours plus a grid line colour)
  * 		numbers from 48-90 are considered to be ASCII characters and will be changed to a character
- * 		that character will be displayed. This range allows #0-9 as well as all uppercase letters.
+ * 		that character will be displayed. This range allows #0-9 as well as all uppercase letters to be displayed.
  * 		Values between 16 and 47 are not displayed on the screen.
  * 
+ * Limitations:
+ *    There is no way to change the colours in the colour array without having to edit the DisplayArray.java code.
  * @author Michael Harwood
  *
  */
