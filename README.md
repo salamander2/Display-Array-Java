@@ -29,7 +29,7 @@ This program originated from a desire to make more use of 2D arrays in teaching 
 * Each version is in a different branch of this repository.
 
 :one: The **master branch** has the version where all of the control is surrendered to DisplayArray.java
-* This is done to IDIOTPROOF the program. 
+* This is done to IDIOT PROOF the program. 
 * How it works:
   1. the user program creates its own array and initializes it
   2. the user program creates a DisplayArray object and passes its own instance to it
@@ -40,7 +40,7 @@ This program originated from a desire to make more use of 2D arrays in teaching 
   * The limitation with this is that there is no way to change a colour (e.g. if you want 1=RED). You have to edit DisplayArray.java
 * It is also a bit more awkward to think of (perhaps). You're just writing methods in the user program, rather than a complete working game.
 
-:two:,:three: For descriptions of the other versions, please see the Readme file in the branches *observer-pattern* and *lambda-pattern*
+:two:,:three: For descriptions of the other versions, which allow more user control, please see the Readme file in the branches *observer-pattern* and *lambda-pattern*
 
 There is a sample user program in each branch, called `UserArrayGame.java` that can be used as a starting template for making array programs to work with DisplayArray.java.
 
