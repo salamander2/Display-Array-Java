@@ -1,129 +1,143 @@
 package displayArray;
-
-import java.awt.BasicStroke;
+/**
+ * This version of DisplayArray is a passive version.
+ * The main class created by the user retains control over everything.
+ * This allows more things to be done.
+ * BUT it also means that the user can totally screw things up by calling functions in the wrong order or at the wrong time.
+ * 
+ * It uses a MouseObserver pattern to send the mouse data to the main program when the mouse is clicked.
+ */
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
+import java.awt.Point;
 import java.awt.event.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import javax.swing.*;
 
-public class DisplayArray implements ComponentListener {
+public class DisplayArray implements ComponentListener{
 
-	//Global variables and their default values
-	//static int SCRSIZE = 720;	//screen size (not used. We use number of squares in SIZE *30 pixels each for starting size)  
-	static int SIZE = 32; //board size
 
-	static Color COLOURLINES = new Color(0,0,0);
-	//Here are 15 colours: 0-14
+	//"constants" - no, they're not final.
+	static int SCRSIZE = 720;	//screen size
+	static int SIZE = 30; //board size
+
+	static Color COLOURBACK = new Color(242,242,242);
+
+	//TODO: make 21 colors (-10 ... +10)
 	static Color colrArray[] = new Color[] {
-		new Color(222,222,222), //Color 0 is typically used for empty squares. USe (100,100,100) or (222,222,222)
-		new Color(10,10,160), new Color(0,180,0),	//dark blue & green
-		new Color(200,130, 40),	new Color(150,150,255),	//sand and light blue	
-		Color.GREEN, Color.ORANGE,
-		Color.CYAN, Color.YELLOW,
-		new Color(150,0,150), new Color(255,40,255), //purple and fuschia
-		Color.PINK, Color.RED,	
-		Color.GRAY.brighter(), Color.WHITE		
+			new Color(222,222,222),	new Color(100,200,100),
+			new Color(100,100,255),	new Color(10,10,130),
+			Color.BLUE, Color.CYAN,
+			Color.GREEN, Color.ORANGE,
+			Color.PINK, Color.RED,
+			Color.YELLOW
 	};
 
-
 	//instance variables
+	//for graphics
 	private JFrame frame;
 	private DrawingPanel panel;
-	private int[][] board;
+	private MouseObserver executionTarget;
+	//for data
+	private int[][] board; 
 	private String title = "Display of Array Data";
-	private boolean resizeMe = true;
-	private int gridLines = 2;
-	private int interval = 0;
+	private boolean resizeMe;
 
-	private ArrayGame ago;
 
-	//constructor
-	DisplayArray(ArrayGame agoObject) {	
-		this.ago = agoObject;
-
-		//Get all of the setup information from the ArrayGame class
-		int tempSize = ago.setSize();
+	/**
+	 * Called at the beginning of the DisplayArray program
+	 * @param tempSize The size of the square grid
+	 */
+	public void setSize(int tempSize) {		
 		if (tempSize > 0 && tempSize < 80) SIZE = tempSize;
-		board = new int[SIZE][SIZE];
+		else SIZE = 30;
+		panel.repaint();
+	}
 
-		String s = ago.setTitle();
+	/**
+	 * Called at the beginning of the DisplayArray program
+	 * @param s title for the JFRame
+	 */
+	public void setTitle(String s) {
 		if (s.length() > 0) title = s;
+		frame.setTitle(title);
+	}
 
-		resizeMe = ago.setResizable();
-		gridLines = ago.setGridLines();
-		board = ago.getArray();
+	/**
+	 * Called at the beginning of the DisplayArray program
+	 * @param allowResize True if you want to be able to resize the grid display
+	 */
+	public void setResizable(boolean allowResize) {
+		resizeMe = allowResize;
+		frame.setResizable(resizeMe);
+	}
 
-		int interval = ago.autoTimerInterval();
-		if (interval > 10) this.interval = interval;
+	/**
+	 * Call this method repeatedly to send updated board data to the DisplayArray program
+	 * It will automatically call repaint()
+	 * @param data
+	 */
+	public void sendArray(int[][] data) {
+		board = data;
+		panel.repaint();
+	}
 
+	
+
+	/**
+	 * Call this method if you want to trigger a repaint() manually 
+	 */
+	public void repaint() {
+		panel.repaint();
+	}
+
+
+	/**
+	 * Constructor.
+	 * @param tempSize The size of the square grid. If the size is not between 1 and 80, then size is set to 30.
+	 */
+	DisplayArray(MouseObserver dataClass, int tempSize) {
+		executionTarget = dataClass;
+		if (tempSize > 0 && tempSize < 80) SIZE = tempSize;
+		else SIZE = 30;
+		board = new int[SIZE][SIZE];		
 		createAndShowGUI();
-
-		if (interval > 0) startTimer();
 	}
 
 
 	private void createAndShowGUI() {
 		panel = new DrawingPanel();
 
-		//frame.setDefaultLookAndFeelDecorated(true);
+		//JFrame.setDefaultLookAndFeelDecorated(true);
 		frame = new JFrame(title);
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		Container content = frame.getContentPane();	
+		Container content = frame.getContentPane();
+		// content.setLayout(new BorderLayout(2,2));	
 		content.add(panel, BorderLayout.CENTER);		
-		//frame.setSize(SCRSIZE, SCRSIZE); //may not be needed since my JPanel has a preferred size
-		frame.setResizable(resizeMe);		
+		frame.setSize(SCRSIZE, SCRSIZE); //may not be needed since my JPanel has a preferred size
+		frame.setResizable(resizeMe);
+		frame.setLocationRelativeTo( null );
 		frame.addComponentListener(this);
 		frame.pack();
-		frame.setLocationRelativeTo( null ); //Interesting. This only works after setSize() or pack()
 		frame.setVisible(true);
-		
+
 		//once the panel is visible, initialize the graphics. (Is this before paintComponent is run?)
 		panel.initGraphics();
 
 	}
 
-	private void startTimer() {
-		myAL myAL = new myAL();
-		javax.swing.Timer timer = new javax.swing.Timer(interval, myAL);
-		myAL.getTimerObject(timer);
-		timer.start();
-		frame.setTitle(title + " ... timer running ...");
-	}
-
-	//Actionlistener for timer inner class
-	private class myAL implements ActionListener {
-		javax.swing.Timer timer;
-
-		void getTimerObject(javax.swing.Timer timer){
-			this.timer = timer;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (ago.updateData() == false) {
-				timer.stop();
-				frame.setTitle(title + " ... timer stopped.");
-			}
-			board = ago.getArray();												
-			panel.repaint();
-		}
-	}
-	
-	//DrawingPanel inner class
-	private class DrawingPanel extends JPanel	
+	private class DrawingPanel extends JPanel	//inner class
 	{		
-		int jpanelW, jpanelH;
+		int jpanW, jpanH;
 		int blockX, blockY;		
 
 		public DrawingPanel() {
-			setBackground(COLOURLINES);
+			setBackground(COLOURBACK);
 			//Because the panel size variables don't get initialized until the panel is displayed,
 			//we can't do a lot of graphics initialization here in the constructor.
 			this.setPreferredSize(new Dimension(SIZE*30,SIZE*30));
@@ -132,46 +146,42 @@ public class DisplayArray implements ComponentListener {
 			addMouseListener(ml);			
 		}
 
-		//** Called by createGUI() AND anytime the JFrame is resized.
+		//** Called by createGUI()
 		private void initGraphics() {
-			jpanelW = this.getSize().width;		
-			jpanelH = this.getSize().height;	
-			blockX = (int)((jpanelW/SIZE)+0.5);
-			blockY = (int)((jpanelH/SIZE)+0.5);
-			this.setFont(new Font("Arial",0,(blockX+blockY)/2));
+			jpanW = this.getSize().width;		
+			jpanH = this.getSize().height;	
+			blockX = (int)((jpanW/SIZE)+0.5);
+			blockY = (int)((jpanH/SIZE)+0.5);
+			this.setFont(new Font("Arial",0,blockX));
+			// System.out.println("init");
 		}
 
 		public void paintComponent(Graphics g) {
-			super.paintComponent(g);			
-			Graphics2D g2 = (Graphics2D) g; 
+			super.paintComponent(g);
 
-			//colour in each square
+			//Draw white grid
+			//			g.setColor(COLOURLINES);
+			//			for (int i=0;i<SIZE;i++) {
+			//				g.drawLine(blockX*i,0,blockX*i,jpanH);
+			//				g.drawLine(0,blockY*i,jpanW,blockY*i);
+			//			}
+
 			for (int i=0;i<SIZE;i++) {
 				for (int j=0;j<SIZE;j++) {
 					int n = board[i][j];
-					if (n < colrArray.length ) {
-						g.setColor(colrArray[n]);						
+					if (n < 10 ) {
+						g.setColor(colrArray[n]); //TODO: n-10						
 					} else {
 						g.setColor(colrArray[0]);						
 					}
-					g.fillRect(blockX*i, blockY*j, blockX, blockY);
+					g.fillRect(blockX*i+1, blockY*j+1, blockX-2, blockY-2);
 					if (n >= 48 && n <= 90) {
 						g.setColor(Color.BLACK);
 						char c = (char)n;
-						g.drawString(c+"", blockX*i+(int)(blockX*0.2), blockY*j+(int)(blockY*0.9)); //position letters properly.
+						g.drawString(c+"", blockX*i+4, blockY*j+2*blockY/3+5);
 					}					
 				}
-			}
-			//Draw  grid
-			g.setColor(COLOURLINES);
-			if (gridLines == 0) return;
-			if (gridLines == 2) g2.setStroke(new BasicStroke (2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-			for (int i=0;i<SIZE;i++) {
-				g.drawLine(blockX*i,0,blockX*i,jpanelH);
-				g.drawLine(0,blockY*i,jpanelW,blockY*i);
-			}
-			//reset lines
-			//g2.setStroke(new BasicStroke (1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+			}			
 		}
 
 
@@ -180,14 +190,11 @@ public class DisplayArray implements ComponentListener {
 				int x = e.getX();
 				int y = e.getY();
 				//calculate which square you clicked on
-				int i = (int) x/blockX;
-				int j = (int) y/blockY;
-				boolean leftClick = true;
-				if (e.getButton() != MouseEvent.BUTTON1) leftClick = false;
+				int i = (int)  x/blockX;
+				int j = (int) y/blockY;	// blockY/y
 				
-				ago.mouseXY(i, j, leftClick);
-				board = ago.getArray();												
-				panel.repaint();
+				executionTarget.mouseProcessing(e, new Point(i,j));
+
 			}		
 		} //end of MyMouseListener class
 
@@ -198,6 +205,7 @@ public class DisplayArray implements ComponentListener {
 		panel.initGraphics();
 		panel.repaint();
 	}
+
 
 	@Override
 	public void componentMoved(ComponentEvent e) {}
