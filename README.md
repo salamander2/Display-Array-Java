@@ -42,7 +42,7 @@ This program originated from a desire to make more use of 2D arrays in teaching 
 
 :two:,:three: For descriptions of the other versions, please see the Readme file in the branches *observer-pattern* and *lambda-pattern*
 
-There is a sample user program in each branch, called `USerArrayGame.java` that can be used as a starting template for making array programs to work with DisplayArray.java.
+There is a sample user program in each branch, called `UserArrayGame.java` that can be used as a starting template for making array programs to work with DisplayArray.java.
 
 :warning: Do not modify any other files (except perhaps to change the colours in DisplayArray.java).
 
