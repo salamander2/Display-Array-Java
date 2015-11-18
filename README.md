@@ -28,8 +28,17 @@ This program originated from a desire to make more use of 2D arrays in teaching 
 * There are three versions with very similar functionality, but with one significant difference. 
 * Each version is in a different branch of this repository.
 * The master branch has the version where all of the control is surrendered to DisplayArray.java
-* * The limitation with this is that there is no way to change a colour (e.g. if you want 1=RED). You have to edit DisplayArray.java
-* 
+  * This is done to IDIOTPROOF the program. 
+  * How it works:
+    1. the user program creates its own array and initializes it
+    2. the user program creates a DisplayArray object and passes its own instance to it
+    3. the display array program then interrogates the user program via method calls to get the data needed in the correct sequence for the program to work correctly.
+  * How does the DisplayArray program connect with the user program?
+    1. The user program must extend `ArrayGame`. This means that the DisplayArray program knows what type of object it is, regardless of the class name of the user program.
+    2. `ArrayGame` implements an interface `ArrayDataInterface`. This forces the user program to include all of the methods listed so that DisplayArray can call them when it is appropriate to do so.
+  * The limitation with this is that there is no way to change a colour (e.g. if you want 1=RED). You have to edit DisplayArray.java
+  * It is also a bit more awkward to think of (perhaps). You're just writing methods in the user program, rather than a complete working game.
+
 
 There is a sample user program in each branch that can be used as a starting template for making array programs to work with DisplayArray.java.
 
