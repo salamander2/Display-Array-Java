@@ -2,6 +2,10 @@ package displayArray;
 
 /**
  * Template for user array game.
+ * 
+ * This version is in the master branch; the DisplayArray class is in control. 
+ * 
+ * This class can be called anything, but it MUST extend ArrayGame.
  */
 
 
@@ -12,8 +16,8 @@ public class MyArrayGame extends ArrayGame {
 	static int EMPTY = 0;
 	
 	//instance variables
-	String title = "Game #1 title";
-	int[][] board = new int[SIZE][SIZE];
+	private String title = "Game #1 title";
+	private int[][] board = new int[SIZE][SIZE];
 	
 	public static void main(String[] args) {
 		new MyArrayGame();
@@ -21,12 +25,15 @@ public class MyArrayGame extends ArrayGame {
 	
 	//constructor
 	MyArrayGame() {
-		//do all initialization
-		initBoard();
-		//hand over control to DisplayArray
-		new DisplayArray(this);		
+		
+		initBoard(); //do all initialization
+		
+		new DisplayArray(this);  //hand over control to DisplayArray		
 	}
 	
+	/**
+	 * Initialization of board for this game.
+	 */
 	void initBoard() {
 		for (int i=0;i<SIZE;i++) {
 			for (int j=0;j<SIZE;j++) {
@@ -60,7 +67,7 @@ public class MyArrayGame extends ArrayGame {
 		
 	}
 	
-	//methods for the interface in the parent class
+	//Required methods for the interface in the parent class
 	@Override
 	public int setSize() {
 		return SIZE;
@@ -86,11 +93,10 @@ public class MyArrayGame extends ArrayGame {
 		return board;
 	}
 
-	/* This is where all of the processing will happen */
+	/* This is where all of the processing will happen (each time a mouse is clicked) */
 	@Override
 	public void mouseXY(int x, int y, boolean leftClick) {
-		board[x][y]++;
-		
+		board[x][y]++;		
 	}
 
 	@Override
