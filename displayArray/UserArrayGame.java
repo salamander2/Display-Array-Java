@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
  * @author griffin
  *
  */
-public class ArrayGame implements MouseObserver{
+public class UserArrayGame implements MouseObserver{
 	//constants
 	final static int SIZE = 22; //board size
 	final static int EMPTY = 0;
@@ -20,11 +20,11 @@ public class ArrayGame implements MouseObserver{
 	private Point mouseLocation = new Point(0,0);
 	
 	public static void main(String[] args) {
-		new ArrayGame();
+		new UserArrayGame();
 	}
 	
 	//constructor
-	ArrayGame() {
+	UserArrayGame() {
 		initBoard();
 		setUpGraphics();
 		runGame();
