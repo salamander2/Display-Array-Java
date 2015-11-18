@@ -77,6 +77,6 @@ public interface ArrayDataInterface {
 	public boolean updateData();
 	
 	/**
-	 * TODO: It would be really nice to be able to replace one colour. To change the pallet of colours.
+	 * TODO: It would be really nice to be able to replace one colour. To change the palette of colours.
 	 */
 }

@@ -11,8 +11,37 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.event.*;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
+/*****************************************************************************
+ * This version of the program takes control of the sequence of events from 
+ * the user program.
+ * 
+ * Order of Events:
+ *    1. Initialize
+ *    	a. get Size
+ *      b. get Title
+ *      c. get Resizable
+ *      d. get Grid lines
+ *      e. get AutoTimerInterval
+ *      f. get Board data
+ *   2. draw graphics
+ *   3. if AutoTimerInterval is non-zero, 
+ *   	a. start the Timer
+ *   	b. indicate Timer is running in Title
+ *      c. update data
+ *      d. get updated data
+ *      e. repaint screen
+ *      f. sleep
+ *      g. if updateData returns false, then stop timer.
+ *   4. on mouse click
+ *      a. calculate the coordinates of the mouse click
+ *      b. send the data to the user program (mouseXY)
+ *      c. get updated data
+ *      d. repaint screen
+ * 
+ *****************************************************************************/
 public class DisplayArray implements ComponentListener {
 
 	//Global variables and their default values
