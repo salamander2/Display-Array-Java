@@ -18,7 +18,7 @@ import javax.swing.JPanel;
  * This version of the program takes control of the sequence of events from 
  * the user program.
  * 
- * Order of Events:
+ * Order of Events (controlled by DisplayArray.java):
  *    1. Initialize
  *    	a. get Size
  *      b. get Title
