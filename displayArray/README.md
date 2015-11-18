@@ -1,7 +1,7 @@
 ## Master Branch
 ###  This version of the program takes control of the sequence of events from the user program.
  
-**Order of Events:**
+**Order of Events (controlled by DisplayArray.java):**
 
 1. Initialize
   1. get Size
