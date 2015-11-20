@@ -1,10 +1,12 @@
 package displayArray;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.JFrame;
@@ -29,6 +31,7 @@ import javax.swing.JPanel;
  *      b. setTitle()
  *      c. setResizable()
  *      d. setGridLines()
+ *      e. reset any colours you want to
  *      
  *   2. draw graphics
  *   	a. sendArray()  This calls repaint() automatically
@@ -48,16 +51,26 @@ public class DisplayArray implements ComponentListener{
 	private static int SCRSIZE = 720;	//screen size
 	private static int SIZE = 30; //board size
 
-	private static Color COLOURBACK = new Color(242,242,242);
-
-	private static Color colrArray[] = new Color[] {
-			new Color(222,222,222),	new Color(100,200,100),
-			new Color(100,100,255),	new Color(10,10,130),
-			Color.BLUE, Color.CYAN,
-			Color.GREEN, Color.ORANGE,
-			Color.PINK, Color.RED,
-			Color.YELLOW
+	/**
+	 * Array of Colours.
+	 * COLOURLINES is the colour of the background and then the gridlines
+	 * Color[0] is the neutral colour used for empty squares.
+	 * A value of -1 in the board[][] array will be mapped to be the same as the highest colour.
+	 * No other negative numbers are displayed. 
+	 */
+	static Color COLOURLINES = new Color(0,0,0);
+	//Here are 15 colours: 0-14
+	static Color colrArray[] = new Color[] {
+		new Color(222,222,222), //Color 0 is typically used for empty squares. USe (100,100,100) or (222,222,222)
+		new Color(10,10,160), new Color(0,180,0),	//dark blue & green
+		new Color(200,130, 40),	new Color(150,150,255),	//sand and light blue	
+		Color.GREEN, Color.ORANGE,
+		Color.CYAN, Color.YELLOW,
+		new Color(150,0,150), new Color(255,40,255), //purple and fuschia
+		Color.PINK, Color.RED,	
+		Color.GRAY.brighter(), Color.WHITE		
 	};
+
 
 	//instance variables
 	//for graphics
@@ -117,7 +130,16 @@ public class DisplayArray implements ComponentListener{
 		panel.repaint();
 	}
 	
-
+	/**
+	 * 
+	 * @param n The index of the colour that you want to replace 
+	 * @param c The new colour
+	 */
+	public void setColor(int n, Color c) {
+		if (n >=0 && n < colrArray.length)
+			colrArray[n] = c;	
+	}
+	
 	/**
 	 * Call this method if you want to trigger a repaint() manually 
 	 */
@@ -161,11 +183,11 @@ public class DisplayArray implements ComponentListener{
 
 	private class DrawingPanel extends JPanel	//inner class
 	{		
-		int jpanW, jpanH;
+		int jpanelW, jpanelH;
 		int blockX, blockY;		
 
 		public DrawingPanel() {
-			setBackground(COLOURBACK);
+			setBackground(COLOURLINES);
 			//Because the panel size variables don't get initialized until the panel is displayed,
 			//we can't do a lot of graphics initialization here in the constructor.
 			this.setPreferredSize(new Dimension(SIZE*30,SIZE*30));
@@ -176,40 +198,47 @@ public class DisplayArray implements ComponentListener{
 
 		//** Called by createGUI()
 		private void initGraphics() {
-			jpanW = this.getSize().width;		
-			jpanH = this.getSize().height;	
-			blockX = (int)((jpanW/SIZE)+0.5);
-			blockY = (int)((jpanH/SIZE)+0.5);
+			jpanelW = this.getSize().width;		
+			jpanelH = this.getSize().height;	
+			blockX = (int)((jpanelW/SIZE)+0.5);
+			blockY = (int)((jpanelH/SIZE)+0.5);
 			this.setFont(new Font("Arial",0,blockX));
 			// System.out.println("init");
 		}
 
 		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
+			super.paintComponent(g);			
+			Graphics2D g2 = (Graphics2D) g; 
 
-			//Draw white grid
-			//			g.setColor(COLOURLINES);
-			//			for (int i=0;i<SIZE;i++) {
-			//				g.drawLine(blockX*i,0,blockX*i,jpanH);
-			//				g.drawLine(0,blockY*i,jpanW,blockY*i);
-			//			}
-
+			//colour in each square
 			for (int i=0;i<SIZE;i++) {
 				for (int j=0;j<SIZE;j++) {
 					int n = board[i][j];
-					if (n < 10 ) {
-						g.setColor(colrArray[n]); //TODO: n-10						
+					if (n < colrArray.length ) {
+						g.setColor(colrArray[n]);
+					} else if (n == -1) {
+						g.setColor(colrArray[colrArray.length-1]);					
 					} else {
 						g.setColor(colrArray[0]);						
 					}
-					g.fillRect(blockX*i+1, blockY*j+1, blockX-2, blockY-2);
+					g.fillRect(blockX*i, blockY*j, blockX, blockY);
 					if (n >= 48 && n <= 90) {
 						g.setColor(Color.BLACK);
 						char c = (char)n;
-						g.drawString(c+"", blockX*i+4, blockY*j+2*blockY/3+5);
+						g.drawString(c+"", blockX*i+(int)(blockX*0.2), blockY*j+(int)(blockY*0.9)); //position letters properly.
 					}					
 				}
-			}			
+			}
+			//Draw  grid
+			g.setColor(COLOURLINES);
+			if (gridLines == 0) return;
+			if (gridLines == 2) g2.setStroke(new BasicStroke (2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+			for (int i=0;i<SIZE;i++) {
+				g.drawLine(blockX*i,0,blockX*i,jpanelH);
+				g.drawLine(0,blockY*i,jpanelW,blockY*i);
+			}
+			//reset lines
+			//g2.setStroke(new BasicStroke (1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		}
 
 
