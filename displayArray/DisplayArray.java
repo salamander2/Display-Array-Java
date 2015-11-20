@@ -1,12 +1,4 @@
 package displayArray;
-/**
- * This version of DisplayArray is a passive version.
- * The main class created by the user retains control over everything.
- * This allows more things to be done.
- * BUT it also means that the user can totally screw things up by calling functions in the wrong order or at the wrong time.
- * 
- * It uses a MouseObserver pattern to send the mouse data to the main program when the mouse is clicked.
- */
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -18,18 +10,47 @@ import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-
+/**
+ * This version of DisplayArray is a passive version.
+ * The main class created by the user retains control over everything.
+ * This allows more things to be done.
+ * BUT it also means that the user can totally screw things up by calling functions in the wrong order or at the wrong time.
+ * 
+ * It uses a MouseObserver pattern to send the mouse data to the main program when the mouse is clicked.
+ *
+ ******************************************************************************
+ * 
+ * Recommended Order of Events (call these methods in sequence):
+ * 
+ * 	  0. Make DisplayArray object, passing it the mouse observer and the grid size.
+ * 
+ *    1. Initialize
+ *    	a. setSize()
+ *      b. setTitle()
+ *      c. setResizable()
+ *      d. setGridLines()
+ *      
+ *   2. draw graphics
+ *   	a. sendArray()  This calls repaint() automatically
+ *   	b. repaint() can be called on demand if needed.
+ *   
+ *   3. on mouse click
+ *      a. calculate the coordinates of the mouse click and stores in a point p.
+ *      b. send the complete MouseEvent to the user program (mouseXY), as well as the point p.
+ *
+ * 
+ *****************************************************************************/
+ 
 public class DisplayArray implements ComponentListener{
 
 
 	//"constants" - no, they're not final.
-	static int SCRSIZE = 720;	//screen size
-	static int SIZE = 30; //board size
+	private static int SCRSIZE = 720;	//screen size
+	private static int SIZE = 30; //board size
 
-	static Color COLOURBACK = new Color(242,242,242);
+	private static Color COLOURBACK = new Color(242,242,242);
 
-	//TODO: make 21 colors (-10 ... +10)
-	static Color colrArray[] = new Color[] {
+	private static Color colrArray[] = new Color[] {
 			new Color(222,222,222),	new Color(100,200,100),
 			new Color(100,100,255),	new Color(10,10,130),
 			Color.BLUE, Color.CYAN,
@@ -47,6 +68,7 @@ public class DisplayArray implements ComponentListener{
 	private int[][] board; 
 	private String title = "Display of Array Data";
 	private boolean resizeMe;
+	private int gridLines = 1;
 
 
 	/**
@@ -67,6 +89,14 @@ public class DisplayArray implements ComponentListener{
 		if (s.length() > 0) title = s;
 		frame.setTitle(title);
 	}
+	
+	/**
+	 * Called at the beginning of the DisplayArray program
+	 * @param n Thickness of grid lines in pixels. Allowable values: 0,1,2.
+	 */
+	public void setGridLines(int n){
+		if (n<0 || n > 2) n = 1;		
+	}
 
 	/**
 	 * Called at the beginning of the DisplayArray program
@@ -80,13 +110,12 @@ public class DisplayArray implements ComponentListener{
 	/**
 	 * Call this method repeatedly to send updated board data to the DisplayArray program
 	 * It will automatically call repaint()
-	 * @param data
+	 * @param 2D data array
 	 */
 	public void sendArray(int[][] data) {
 		board = data;
 		panel.repaint();
 	}
-
 	
 
 	/**
@@ -96,12 +125,11 @@ public class DisplayArray implements ComponentListener{
 		panel.repaint();
 	}
 
-
 	/**
 	 * Constructor.
 	 * @param tempSize The size of the square grid. If the size is not between 1 and 80, then size is set to 30.
 	 */
-	DisplayArray(MouseObserver dataClass, int tempSize) {
+	public DisplayArray(MouseObserver dataClass, int tempSize) {
 		executionTarget = dataClass;
 		if (tempSize > 0 && tempSize < 80) SIZE = tempSize;
 		else SIZE = 30;
@@ -185,7 +213,7 @@ public class DisplayArray implements ComponentListener{
 		}
 
 
-		class MyMouseListener extends MouseAdapter	{	//inner class inside DrawingPanel
+		private class MyMouseListener extends MouseAdapter	{	//inner class inside DrawingPanel
 			public void mouseClicked(MouseEvent e) {
 				int x = e.getX();
 				int y = e.getY();
@@ -205,7 +233,6 @@ public class DisplayArray implements ComponentListener{
 		panel.initGraphics();
 		panel.repaint();
 	}
-
 
 	@Override
 	public void componentMoved(ComponentEvent e) {}
