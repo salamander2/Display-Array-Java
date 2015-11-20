@@ -184,7 +184,7 @@ public class DisplayArray implements ComponentListener {
 					if (n < colrArray.length ) {
 						g.setColor(colrArray[n]);						
 					} else if (n == -1) {
-						g.setColor(colrArray[colrArray.length]);
+						g.setColor(colrArray[colrArray.length-1]);
 					}
 					else {
 						g.setColor(colrArray[0]);						
