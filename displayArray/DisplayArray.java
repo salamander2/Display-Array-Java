@@ -26,7 +26,9 @@ import javax.swing.JPanel;
  *      d. get Grid lines
  *      e. get AutoTimerInterval
  *      f. get Board data
+ *      
  *   2. draw graphics
+ *   
  *   3. if AutoTimerInterval is non-zero, 
  *   	a. start the Timer
  *   	b. indicate Timer is running in Title
@@ -35,6 +37,7 @@ import javax.swing.JPanel;
  *      e. repaint screen
  *      f. sleep
  *      g. if updateData returns false, then stop timer.
+ *  
  *   4. on mouse click
  *      a. calculate the coordinates of the mouse click
  *      b. send the data to the user program (mouseXY)
@@ -49,7 +52,7 @@ public class DisplayArray implements ComponentListener {
 	static int SIZE = 32; //board size
 
 	static Color COLOURLINES = new Color(0,0,0);
-	//Here are 15 colours: 0-14
+	//Here are 15 colours: 0-14. A colour of -1 is painted the same as the highest colour. No other negative values will be displayed.
 	static Color colrArray[] = new Color[] {
 		new Color(222,222,222), //Color 0 is typically used for empty squares. USe (100,100,100) or (222,222,222)
 		new Color(10,10,160), new Color(0,180,0),	//dark blue & green
@@ -180,7 +183,10 @@ public class DisplayArray implements ComponentListener {
 					int n = board[i][j];
 					if (n < colrArray.length ) {
 						g.setColor(colrArray[n]);						
-					} else {
+					} else if (n == -1) {
+						g.setColor(colrArray[colrArray.length]);
+					}
+					else {
 						g.setColor(colrArray[0]);						
 					}
 					g.fillRect(blockX*i, blockY*j, blockX, blockY);
