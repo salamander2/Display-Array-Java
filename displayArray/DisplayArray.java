@@ -47,19 +47,21 @@ import javax.swing.JPanel;
 public class DisplayArray implements ComponentListener{
 
 
-	//"constants" - no, they're not final.
+	//"constants" None of these are really constants since the UserProgram can modify them.
 	private static int SCRSIZE = 720;	//screen size
 	private static int SIZE = 30; //board size
 
 	/**
 	 * Array of Colours.
 	 * COLOURLINES is the colour of the background and then the gridlines
+	 * All letters are drawn in BLACK.
+	 * 
 	 * Color[0] is the neutral colour used for empty squares.
 	 * A value of -1 in the board[][] array will be mapped to be the same as the highest colour.
 	 * No other negative numbers are displayed. 
+	 * There are 15 colours (0-14)
 	 */
 	static Color COLOURLINES = new Color(0,0,0);
-	//Here are 15 colours: 0-14
 	static Color colrArray[] = new Color[] {
 		new Color(222,222,222), //Color 0 is typically used for empty squares. USe (100,100,100) or (222,222,222)
 		new Color(10,10,160), new Color(0,180,0),	//dark blue & green

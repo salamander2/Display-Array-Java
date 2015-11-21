@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 public class UserArrayGame implements MouseObserver{
 	
 	//constants
-	final static int SIZE = 22; //board size
+	final static int SIZE = 10; //board size
 	final static int EMPTY = 0;
 	
 	//instance variables
