@@ -1,5 +1,6 @@
 package displayArray;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
@@ -62,8 +63,8 @@ public class UserArrayGame implements MouseObserver{
 		disp = new DisplayArray(this, SIZE); 
 		disp.setResizable(true);
 		disp.setTitle(title);
-		
-		disp.sendArray(board); //this calls repaint(), so it must be last
+		disp.setColor(0, new Color(77,77,77));
+		disp.sendArray(board); //this calls repaint(), so it must be the last thing done here
 	}
 	
 	/**

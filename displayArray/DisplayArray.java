@@ -84,15 +84,15 @@ public class DisplayArray implements ComponentListener{
 	private int gridLines = 1;
 
 
-	/**
-	 * Called at the beginning of the DisplayArray program
-	 * @param tempSize The size of the square grid
-	 */
-	public void setSize(int tempSize) {		
-		if (tempSize > 0 && tempSize < 80) SIZE = tempSize;
-		else SIZE = 30;
-		panel.repaint();
-	}
+//	/**
+//	 * Called at the beginning of the DisplayArray program
+//	 * @param tempSize The size of the square grid
+//	 */
+//	public void setSize(int tempSize) {		
+//		if (tempSize > 0 && tempSize < 80) SIZE = tempSize;
+//		else SIZE = 30;
+//		panel.repaint();
+//	}
 
 	/**
 	 * Called at the beginning of the DisplayArray program
