@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -155,7 +156,7 @@ public class DisplayArray implements ComponentListener{
 	 */
 	public DisplayArray(MouseObserver dataClass, int tempSize) {
 		executionTarget = dataClass;
-		if (tempSize > 0 && tempSize < 80) SIZE = tempSize;
+		if (tempSize > 0 && tempSize <= 80) SIZE = tempSize;
 		else SIZE = 30;
 		board = new int[SIZE][SIZE];		
 		createAndShowGUI();
@@ -187,12 +188,20 @@ public class DisplayArray implements ComponentListener{
 	{		
 		int jpanelW, jpanelH;
 		int blockX, blockY;		
-
+		
 		public DrawingPanel() {
 			setBackground(COLOURLINES);
 			//Because the panel size variables don't get initialized until the panel is displayed,
 			//we can't do a lot of graphics initialization here in the constructor.
-			this.setPreferredSize(new Dimension(SIZE*30,SIZE*30));
+//			int pixels = SCRSIZE/SIZE;
+//			pixels = (pixels/10)*10;
+			int pixels = 30;
+			if (SIZE < 8) pixels = 100;
+			else if (SIZE < 20) pixels = 50;
+			else if (SIZE < 40) pixels = 25;
+			else pixels = 12;
+			
+			this.setPreferredSize(new Dimension(SIZE*pixels,SIZE*pixels));
 			this.setFont(new Font("Arial",0,36));
 			MyMouseListener ml = new MyMouseListener();
 			addMouseListener(ml);			
@@ -211,7 +220,8 @@ public class DisplayArray implements ComponentListener{
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);			
 			Graphics2D g2 = (Graphics2D) g; 
-
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			
 			//colour in each square
 			for (int i=0;i<SIZE;i++) {
 				for (int j=0;j<SIZE;j++) {
